@@ -1,0 +1,7 @@
+com\dev\model\News.class
+com\dev\dao\NewsDAO.class
+com\dev\dao\CategoryDAO.class
+com\dev\dao\CommentDAO.class
+com\dev\model\Category.class
+com\dev\model\Comment.class
+com\dev\dao\Dao.class
