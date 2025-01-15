@@ -1,7 +1,12 @@
+com\dev\dal\sql\TestDBConnection.class
+com\dev\dal\sql\DataSourceSingleton.class
 com\dev\model\News.class
+com\dev\dal\RepositoryFactory.class
+com\dev\model\Category.class
+com\dev\dal\sql\SqlRepository.class
 com\dev\dao\NewsDAO.class
+com\dev\dal\Repository.class
 com\dev\dao\CategoryDAO.class
 com\dev\dao\CommentDAO.class
-com\dev\model\Category.class
 com\dev\model\Comment.class
 com\dev\dao\Dao.class

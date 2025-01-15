@@ -18,6 +18,18 @@ public class Comment {
     private String userName;
     private Date commentDate;
 
+    // Parameterized Constructor
+    public Comment(int commentID, int newsID, String commentText, String userName, Date commentDate) {
+        this.commentID = commentID;
+        this.newsID = newsID;
+        this.commentText = commentText;
+        this.userName = userName;
+        this.commentDate = commentDate;
+    }
+
+    // Default Constructor
+    public Comment() {}
+
     // Getters and Setters
     public int getCommentID() { return commentID; }
     public void setCommentID(int commentID) { this.commentID = commentID; }

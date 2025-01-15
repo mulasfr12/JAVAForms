@@ -1,2 +1,3 @@
 com\dev\utilities\DBConnection.class
+com\dev\utilities\TestDBConnection.class
 com\dev\utilities\Utilities.class

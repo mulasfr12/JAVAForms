@@ -21,6 +21,21 @@ public class News implements Comparable<News> {
     private int categoryID;
     private String mediaDescription;
 
+    // Parameterized Constructor
+    public News(int newsID, String title, String description, String thumbnailImage, String fullSizeImage, Date publicationDate, int categoryID, String mediaDescription) {
+        this.newsID = newsID;
+        this.title = title;
+        this.description = description;
+        this.thumbnailImage = thumbnailImage;
+        this.fullSizeImage = fullSizeImage;
+        this.publicationDate = publicationDate;
+        this.categoryID = categoryID;
+        this.mediaDescription = mediaDescription;
+    }
+
+    // Default Constructor
+    public News() {}
+
     // Getters and Setters
     public int getNewsID() { return newsID; }
     public void setNewsID(int newsID) { this.newsID = newsID; }
