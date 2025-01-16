@@ -1,3 +1,10 @@
+com\dev\utilities\Item.class
 com\dev\utilities\DBConnection.class
-com\dev\utilities\TestDBConnection.class
-com\dev\utilities\Utilities.class
+com\dev\utilities\DBConnectionTest.class
+com\dev\factory\UrlConnectionFactory.class
+com\dev\utilities\RssFeedParser.class
+com\dev\utilities\RssFeed.class
+com\dev\utilities\RssFeed$Channel.class
+com\dev\utilities\JAXBUtils.class
+com\dev\factory\ParserFactory.class
+com\dev\utilities\Item$MediaThumbnail.class

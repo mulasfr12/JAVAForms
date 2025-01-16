@@ -8,12 +8,13 @@ package com.dev.utilities;
  *
  * @author salum
  */
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DBConnection {
-   private static final String URL = "jdbc:sqlserver://localhost;databaseName=NewsAppDB;integratedSecurity=true;encrypt=false;";
+   private static final String URL = "jdbc:sqlserver://localhost;databaseName=NewsApplicationDB;integratedSecurity=true;encrypt=false;";
     private static final String DRIVER = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
 
     public static Connection getConnection() throws SQLException, ClassNotFoundException {
