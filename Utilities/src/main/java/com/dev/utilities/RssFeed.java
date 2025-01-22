@@ -1,7 +1,10 @@
 package com.dev.utilities;
 
 import jakarta.xml.bind.annotation.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 @XmlRootElement(name = "rss")
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -25,7 +28,7 @@ public class RssFeed {
         private String title;
 
         @XmlElement(name = "description")
-        private String description; // Add this field
+        private String description;
 
         @XmlElement(name = "link")
         private String link;
@@ -41,11 +44,11 @@ public class RssFeed {
             this.title = title;
         }
 
-        public String getDescription() { // Add this getter
+        public String getDescription() {
             return description;
         }
 
-        public void setDescription(String description) { // Add this setter
+        public void setDescription(String description) {
             this.description = description;
         }
 
@@ -64,5 +67,105 @@ public class RssFeed {
         public void setItems(List<Item> items) {
             this.items = items;
         }
+
+        @XmlAccessorType(XmlAccessType.FIELD)
+        public static class Item {
+
+            @XmlElement(name = "title")
+            private String title;
+
+            @XmlElement(name = "description")
+            private String description;
+
+            @XmlElement(name = "pubDate")
+            private String publicationDate;
+
+            @XmlElement(name = "media:thumbnail")
+            private MediaThumbnail mediaThumbnail;
+
+            @XmlElement(name = "media:content")
+            private MediaContent mediaContent;
+
+            public String getTitle() {
+                return title;
+            }
+
+            public void setTitle(String title) {
+                this.title = title;
+            }
+
+            public String getDescription() {
+                return description;
+            }
+
+            public void setDescription(String description) {
+                this.description = description;
+            }
+
+            public String getPublicationDate() {
+                return publicationDate;
+            }
+
+            public void setPublicationDate(String publicationDate) {
+                this.publicationDate = publicationDate;
+            }
+
+            public MediaThumbnail getMediaThumbnail() {
+                return mediaThumbnail;
+            }
+
+            public void setMediaThumbnail(MediaThumbnail mediaThumbnail) {
+                this.mediaThumbnail = mediaThumbnail;
+            }
+
+            public MediaContent getMediaContent() {
+                return mediaContent;
+            }
+
+            public void setMediaContent(MediaContent mediaContent) {
+                this.mediaContent = mediaContent;
+            }
+        }
+
+        @XmlAccessorType(XmlAccessType.FIELD)
+        public static class MediaThumbnail {
+
+            @XmlAttribute(name = "url")
+            private String url;
+
+            public String getUrl() {
+                return url;
+            }
+
+            public void setUrl(String url) {
+                this.url = url;
+            }
+        }
+
+        @XmlAccessorType(XmlAccessType.FIELD)
+        public static class MediaContent {
+
+            @XmlAttribute(name = "url")
+            private String url;
+
+            public String getUrl() {
+                return url;
+            }
+
+            public void setUrl(String url) {
+                this.url = url;
+            }
+        }
+        private java.sql.Timestamp parsePublicationDate(String pubDate) {
+    try {
+        SimpleDateFormat format = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z", Locale.ENGLISH);
+        Date date = format.parse(pubDate);
+        return new java.sql.Timestamp(date.getTime());
+    } catch (Exception e) {
+        e.printStackTrace();
+        return null; // Handle invalid date formats
+    }
+}
+
     }
 }

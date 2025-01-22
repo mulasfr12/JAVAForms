@@ -3,7 +3,6 @@ package com.dev.utilities;
 import jakarta.xml.bind.annotation.*;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType
 public class Item {
 
     @XmlElement(name = "title")
@@ -13,18 +12,14 @@ public class Item {
     private String description;
 
     @XmlElement(name = "pubDate")
-    private String pubDate;
+    private String publicationDate;
 
-    @XmlElement(name = "link")
-    private String link;
-
-    @XmlElement(name = "guid")
-    private String guid;
-
-    @XmlElement(name = "thumbnail", namespace = "http://search.yahoo.com/mrss/")
+    @XmlElement(name = "media:thumbnail")
     private MediaThumbnail mediaThumbnail;
 
-    // Getters and Setters
+    @XmlElement(name = "media:content")
+    private MediaContent mediaContent;
+
     public String getTitle() {
         return title;
     }
@@ -41,28 +36,12 @@ public class Item {
         this.description = description;
     }
 
-    public String getPubDate() {
-        return pubDate;
+    public String getPublicationDate() {
+        return publicationDate;
     }
 
-    public void setPubDate(String pubDate) {
-        this.pubDate = pubDate;
-    }
-
-    public String getLink() {
-        return link;
-    }
-
-    public void setLink(String link) {
-        this.link = link;
-    }
-
-    public String getGuid() {
-        return guid;
-    }
-
-    public void setGuid(String guid) {
-        this.guid = guid;
+    public void setPublicationDate(String publicationDate) {
+        this.publicationDate = publicationDate;
     }
 
     public MediaThumbnail getMediaThumbnail() {
@@ -73,17 +52,19 @@ public class Item {
         this.mediaThumbnail = mediaThumbnail;
     }
 
+    public MediaContent getMediaContent() {
+        return mediaContent;
+    }
+
+    public void setMediaContent(MediaContent mediaContent) {
+        this.mediaContent = mediaContent;
+    }
+
     @XmlAccessorType(XmlAccessType.FIELD)
     public static class MediaThumbnail {
 
         @XmlAttribute(name = "url")
         private String url;
-
-        @XmlAttribute(name = "width")
-        private int width;
-
-        @XmlAttribute(name = "height")
-        private int height;
 
         public String getUrl() {
             return url;
@@ -92,21 +73,20 @@ public class Item {
         public void setUrl(String url) {
             this.url = url;
         }
+    }
 
-        public int getWidth() {
-            return width;
+    @XmlAccessorType(XmlAccessType.FIELD)
+    public static class MediaContent {
+
+        @XmlAttribute(name = "url")
+        private String url;
+
+        public String getUrl() {
+            return url;
         }
 
-        public void setWidth(int width) {
-            this.width = width;
-        }
-
-        public int getHeight() {
-            return height;
-        }
-
-        public void setHeight(int height) {
-            this.height = height;
+        public void setUrl(String url) {
+            this.url = url;
         }
     }
 }

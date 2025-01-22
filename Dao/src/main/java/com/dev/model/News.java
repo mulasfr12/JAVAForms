@@ -18,18 +18,16 @@ public class News implements Comparable<News> {
     private String thumbnailImage;
     private String fullSizeImage;
     private Date publicationDate;
-    private int categoryID;
     private String mediaDescription;
 
     // Parameterized Constructor
-    public News(int newsID, String title, String description, String thumbnailImage, String fullSizeImage, Date publicationDate, int categoryID, String mediaDescription) {
+    public News(int newsID, String title, String description, String thumbnailImage, String fullSizeImage, Date publicationDate, String mediaDescription) {
         this.newsID = newsID;
         this.title = title;
         this.description = description;
         this.thumbnailImage = thumbnailImage;
         this.fullSizeImage = fullSizeImage;
-        this.publicationDate = publicationDate;
-        this.categoryID = categoryID;
+        this.publicationDate = publicationDate;       
         this.mediaDescription = mediaDescription;
     }
 
@@ -49,8 +47,6 @@ public class News implements Comparable<News> {
     public void setFullSizeImage(String fullSizeImage) { this.fullSizeImage = fullSizeImage; }
     public Date getPublicationDate() { return publicationDate; }
     public void setPublicationDate(Date publicationDate) { this.publicationDate = publicationDate; }
-    public int getCategoryID() { return categoryID; }
-    public void setCategoryID(int categoryID) { this.categoryID = categoryID; }
     public String getMediaDescription() { return mediaDescription; }
     public void setMediaDescription(String mediaDescription) { this.mediaDescription = mediaDescription; }
 

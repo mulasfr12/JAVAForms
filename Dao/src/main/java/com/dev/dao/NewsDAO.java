@@ -30,8 +30,7 @@ public class NewsDAO {
             stmt.setString(3, news.getThumbnailImage());
             stmt.setString(4, news.getFullSizeImage());
             stmt.setTimestamp(5, new Timestamp(news.getPublicationDate().getTime()));
-            stmt.setInt(6, news.getCategoryID());
-            stmt.setString(7, news.getMediaDescription());
+            stmt.setString(6, news.getMediaDescription());
             return stmt.executeUpdate() > 0;
         }
     }
@@ -51,7 +50,6 @@ public class NewsDAO {
                 news.setThumbnailImage(rs.getString("ThumbnailImage"));
                 news.setFullSizeImage(rs.getString("FullSizeImage"));
                 news.setPublicationDate(rs.getTimestamp("PublicationDate"));
-                news.setCategoryID(rs.getInt("CategoryID"));
                 news.setMediaDescription(rs.getString("MediaDescription"));
                 newsList.add(news);
             }
@@ -69,9 +67,8 @@ public class NewsDAO {
             stmt.setString(3, news.getThumbnailImage());
             stmt.setString(4, news.getFullSizeImage());
             stmt.setTimestamp(5, new Timestamp(news.getPublicationDate().getTime()));
-            stmt.setInt(6, news.getCategoryID());
-            stmt.setString(7, news.getMediaDescription());
-            stmt.setInt(8, news.getNewsID());
+            stmt.setString(6, news.getMediaDescription());
+            stmt.setInt(7, news.getNewsID());
             return stmt.executeUpdate() > 0;
         }
     }

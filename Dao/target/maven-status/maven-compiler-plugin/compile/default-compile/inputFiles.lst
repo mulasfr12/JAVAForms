@@ -2,11 +2,7 @@ C:\Users\salum\Documents\JAVA\NewsApplication\Dao\src\main\java\com\dev\dal\Repo
 C:\Users\salum\Documents\JAVA\NewsApplication\Dao\src\main\java\com\dev\dal\RepositoryFactory.java
 C:\Users\salum\Documents\JAVA\NewsApplication\Dao\src\main\java\com\dev\dal\sql\DataSourceSingleton.java
 C:\Users\salum\Documents\JAVA\NewsApplication\Dao\src\main\java\com\dev\dal\sql\SqlRepository.java
-C:\Users\salum\Documents\JAVA\NewsApplication\Dao\src\main\java\com\dev\dal\sql\TestDBConnection.java
-C:\Users\salum\Documents\JAVA\NewsApplication\Dao\src\main\java\com\dev\dao\CategoryDAO.java
 C:\Users\salum\Documents\JAVA\NewsApplication\Dao\src\main\java\com\dev\dao\CommentDAO.java
-C:\Users\salum\Documents\JAVA\NewsApplication\Dao\src\main\java\com\dev\dao\Dao.java
 C:\Users\salum\Documents\JAVA\NewsApplication\Dao\src\main\java\com\dev\dao\NewsDAO.java
-C:\Users\salum\Documents\JAVA\NewsApplication\Dao\src\main\java\com\dev\model\Category.java
 C:\Users\salum\Documents\JAVA\NewsApplication\Dao\src\main\java\com\dev\model\Comment.java
 C:\Users\salum\Documents\JAVA\NewsApplication\Dao\src\main\java\com\dev\model\News.java

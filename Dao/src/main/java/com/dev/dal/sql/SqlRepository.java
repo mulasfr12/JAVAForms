@@ -21,8 +21,9 @@ import java.util.Optional;
 public class SqlRepository implements Repository {
 
     // SQL Queries for News
-    private static final String CREATE_NEWS = "INSERT INTO News (Title, Description, ThumbnailImage, FullSizeImage, PublicationDate, CategoryID, MediaDescription) VALUES (?, ?, ?, ?, ?, ?, ?)";
-    private static final String UPDATE_NEWS = "UPDATE News SET Title = ?, Description = ?, ThumbnailImage = ?, FullSizeImage = ?, PublicationDate = ?, CategoryID = ?, MediaDescription = ? WHERE NewsID = ?";
+   private static final String CREATE_NEWS = "INSERT INTO News (Title, Description, ThumbnailImage, FullSizeImage, PublicationDate, MediaDescription) VALUES (?, ?, ?, ?, ?, ?)";
+   private static final String UPDATE_NEWS = "UPDATE News SET Title = ?, Description = ?, ThumbnailImage = ?, FullSizeImage = ?, PublicationDate = ?, MediaDescription = ? WHERE NewsID = ?";
+
     private static final String DELETE_NEWS = "DELETE FROM News WHERE NewsID = ?";
     private static final String SELECT_NEWS = "SELECT * FROM News WHERE NewsID = ?";
     private static final String SELECT_ALL_NEWS = "SELECT * FROM News";
@@ -43,9 +44,8 @@ public class SqlRepository implements Repository {
             stmt.setString(2, news.getDescription());
             stmt.setString(3, news.getThumbnailImage());
             stmt.setString(4, news.getFullSizeImage());
-            stmt.setTimestamp(5, new Timestamp(news.getPublicationDate().getTime()));
-            stmt.setInt(6, news.getCategoryID());
-            stmt.setString(7, news.getMediaDescription());
+            stmt.setTimestamp(5, new Timestamp(news.getPublicationDate().getTime()));        
+            stmt.setString(6, news.getMediaDescription());
             stmt.executeUpdate();
 
             try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
@@ -67,9 +67,8 @@ public class SqlRepository implements Repository {
                 stmt.setString(2, news.getDescription());
                 stmt.setString(3, news.getThumbnailImage());
                 stmt.setString(4, news.getFullSizeImage());
-                stmt.setTimestamp(5, new Timestamp(news.getPublicationDate().getTime()));
-                stmt.setInt(6, news.getCategoryID());
-                stmt.setString(7, news.getMediaDescription());
+                stmt.setTimestamp(5, new Timestamp(news.getPublicationDate().getTime()));        
+                stmt.setString(6, news.getMediaDescription());
                 stmt.addBatch();
             }
             stmt.executeBatch();
@@ -84,10 +83,9 @@ public class SqlRepository implements Repository {
             stmt.setString(2, news.getDescription());
             stmt.setString(3, news.getThumbnailImage());
             stmt.setString(4, news.getFullSizeImage());
-            stmt.setTimestamp(5, new Timestamp(news.getPublicationDate().getTime()));
-            stmt.setInt(6, news.getCategoryID());
-            stmt.setString(7, news.getMediaDescription());
-            stmt.setInt(8, id);
+            stmt.setTimestamp(5, new Timestamp(news.getPublicationDate().getTime()));      
+            stmt.setString(6, news.getMediaDescription());
+            stmt.setInt(7, id);
             stmt.executeUpdate();
         }
     }
@@ -114,8 +112,7 @@ public class SqlRepository implements Repository {
                             rs.getString("Description"),
                             rs.getString("ThumbnailImage"),
                             rs.getString("FullSizeImage"),
-                            rs.getTimestamp("PublicationDate"),
-                            rs.getInt("CategoryID"),
+                            rs.getTimestamp("PublicationDate"),                     
                             rs.getString("MediaDescription")
                     ));
                 }
@@ -137,8 +134,7 @@ public class SqlRepository implements Repository {
                         rs.getString("Description"),
                         rs.getString("ThumbnailImage"),
                         rs.getString("FullSizeImage"),
-                        rs.getTimestamp("PublicationDate"),
-                        rs.getInt("CategoryID"),
+                        rs.getTimestamp("PublicationDate"),                    
                         rs.getString("MediaDescription")
                 ));
             }
