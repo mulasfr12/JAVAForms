@@ -76,7 +76,7 @@
     </Container>
     <Component class="javax.swing.JLabel" name="jLabel1">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Select on a news to view  anc comment"/>
+        <Property name="text" type="java.lang.String" value="Select on a news to view and comment"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JButton" name="viewNewsButton">

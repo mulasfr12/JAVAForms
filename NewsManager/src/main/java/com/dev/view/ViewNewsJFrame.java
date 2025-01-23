@@ -28,6 +28,7 @@ public ViewNewsJFrame() {
         initComponents();
         populateFields(title, description, imagePath);
     }
+    
     private void populateFields(String title, String description, String imagePath) {
     titleField.setText(title);
     descriptionArea.setText(description);

@@ -5,6 +5,7 @@
 package com.dev.view;
 
 import com.dev.dal.sql.DataSourceSingleton;
+import com.dev.utilities.UserSession;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -116,7 +117,7 @@ public class LoginPanel extends javax.swing.JPanel {
     /**
      * Handles the login button click event.
      */
- private void handleLogin() {
+private void handleLogin() {
     String username = usernameField.getText();
     String password = new String(passwordField.getPassword());
 
@@ -125,25 +126,42 @@ public class LoginPanel extends javax.swing.JPanel {
         return;
     }
 
-    // Authenticate the user and get their role
-    String role = authenticateUser(username, password);
+    try {
+        // Authenticate the user and get their role
+        String role = authenticateUser(username, password);
 
-    if (role != null) {
-        System.out.println("Login successful! Role: " + role);
-        JOptionPane.showMessageDialog(this, "Login successful! Role: " + role, "Success", JOptionPane.INFORMATION_MESSAGE);
+        if (role != null) {
+            // Save the username to the session
+            UserSession.getInstance().setUsername(username);
 
-        // Role-based navigation
-        if ("admin".equalsIgnoreCase(role.trim())) {
-            openAdminDashboard();
-        } else if ("user".equalsIgnoreCase(role.trim())) {
-            openUserDashboard();
+            // Success message
+            JOptionPane.showMessageDialog(this, "Login successful! Role: " + role, "Success", JOptionPane.INFORMATION_MESSAGE);
+
+            // Role-based navigation
+            switch (role.trim().toLowerCase()) {
+                case "admin":
+                    openAdminDashboard();
+                    break;
+                case "user":
+                    openUserDashboard();
+                    break;
+                default:
+                    JOptionPane.showMessageDialog(this, "Unknown role: " + role, "Error", JOptionPane.ERROR_MESSAGE);
+                    break;
+            }
+
+            // Dispose of the parent JFrame
+            SwingUtilities.getWindowAncestor(this).dispose();
         } else {
-            JOptionPane.showMessageDialog(this, "Unknown role: " + role, "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Invalid username or password.", "Error", JOptionPane.ERROR_MESSAGE);
         }
-    } else {
-        JOptionPane.showMessageDialog(this, "Invalid username or password.", "Error", JOptionPane.ERROR_MESSAGE);
+    } catch (Exception e) {
+        e.printStackTrace();
+        JOptionPane.showMessageDialog(this, "An error occurred during login: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
     }
 }
+
+
 
 private void openAdminDashboard() {
     JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(this);

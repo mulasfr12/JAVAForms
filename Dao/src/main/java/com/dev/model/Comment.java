@@ -20,12 +20,12 @@ public class Comment {
 
     // Parameterized Constructor
     public Comment(int commentID, int newsID, String commentText, String userName, Date commentDate) {
-        this.commentID = commentID;
-        this.newsID = newsID;
-        this.commentText = commentText;
-        this.userName = userName;
-        this.commentDate = commentDate;
-    }
+    this.commentID = commentID;
+    this.newsID = newsID;
+    this.commentText = commentText;
+    this.userName = userName;
+    this.commentDate = commentDate;
+}
 
     // Default Constructor
     public Comment() {}

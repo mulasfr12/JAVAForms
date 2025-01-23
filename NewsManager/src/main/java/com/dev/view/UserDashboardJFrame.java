@@ -42,20 +42,16 @@ private void loadNews() {
         }
     }
 
-   private void handleViewNews() {
+  private void handleViewNews() {
     int selectedRow = newsTable.getSelectedRow();
 
     if (selectedRow >= 0) {
         int newsId = (int) newsTable.getValueAt(selectedRow, 0);
-        String title = (String) newsTable.getValueAt(selectedRow, 1);
-        String description = (String) newsTable.getValueAt(selectedRow, 2);
 
         try {
             News selectedNews = repository.selectNews(newsId).orElse(null);
             if (selectedNews != null) {
-                // Retrieve the logged-in username (assumed to be stored in a session or field)
-                String loggedInUsername = "exampleUser"; // Replace with the actual logic to fetch the logged-in user
-                new ViewUserNewsJFrame(selectedNews, loggedInUsername).setVisible(true); // Pass both News and username
+                new ViewUserNewsJFrame(selectedNews).setVisible(true); // Pass only the News object
             } else {
                 JOptionPane.showMessageDialog(this, "Unable to retrieve the selected news details.", "Error", JOptionPane.ERROR_MESSAGE);
             }
@@ -67,6 +63,7 @@ private void loadNews() {
         JOptionPane.showMessageDialog(this, "Please select a news item to view.", "Info", JOptionPane.INFORMATION_MESSAGE);
     }
 }
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -98,7 +95,7 @@ private void loadNews() {
         ));
         jScrollPane1.setViewportView(newsTable);
 
-        jLabel1.setText("Select on a news to view  anc comment");
+        jLabel1.setText("Select on a news to view and comment");
 
         viewNewsButton.setText("View News");
         viewNewsButton.addActionListener(new java.awt.event.ActionListener() {
@@ -138,18 +135,20 @@ private void loadNews() {
 
     private void viewNewsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewNewsButtonActionPerformed
         // TODO add your handling code here:
-    int selectedRow = newsTable.getSelectedRow();
+   int selectedRow = newsTable.getSelectedRow();
 
     if (selectedRow >= 0) {
         int newsId = (int) newsTable.getValueAt(selectedRow, 0);
 
         try {
+            // Fetch the selected news item from the repository
             Optional<News> optionalNews = repository.selectNews(newsId);
 
             if (optionalNews.isPresent()) {
                 News selectedNews = optionalNews.get();
-                String loggedInUsername = "currentLoggedInUser"; // Retrieve this from your session or authentication module
-                new ViewUserNewsJFrame(selectedNews, loggedInUsername).setVisible(true);
+
+                // Open the ViewUserNewsJFrame with the selected news
+                new ViewUserNewsJFrame(selectedNews).setVisible(true);
             } else {
                 JOptionPane.showMessageDialog(this, "Selected news item not found in the database.", "Error", JOptionPane.ERROR_MESSAGE);
             }

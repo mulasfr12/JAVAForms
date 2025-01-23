@@ -7,6 +7,7 @@ com\dev\utilities\DBConnection.class
 com\dev\utilities\Item$MediaContent.class
 com\dev\factory\UrlConnectionFactory.class
 com\dev\utilities\RssFeed$Channel.class
+com\dev\utilities\UserSession.class
 com\dev\utilities\JAXBUtils.class
 com\dev\utilities\RssFeed$Channel$Item.class
 com\dev\factory\ParserFactory.class
