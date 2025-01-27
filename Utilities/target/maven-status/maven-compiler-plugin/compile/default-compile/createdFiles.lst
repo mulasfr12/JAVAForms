@@ -10,4 +10,5 @@ com\dev\utilities\RssFeed$Channel.class
 com\dev\utilities\UserSession.class
 com\dev\utilities\JAXBUtils.class
 com\dev\utilities\RssFeed$Channel$Item.class
+com\dev\utilities\package-info.class
 com\dev\factory\ParserFactory.class

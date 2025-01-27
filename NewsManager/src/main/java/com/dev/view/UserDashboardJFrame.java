@@ -49,27 +49,36 @@ private void loadNews() {
         }
     }
 
-  private void handleViewNews() {
+ private void handleViewNews() {
     int selectedRow = newsTable.getSelectedRow();
 
     if (selectedRow >= 0) {
         int newsId = (int) newsTable.getValueAt(selectedRow, 0);
 
         try {
-            News selectedNews = repository.selectNews(newsId).orElse(null);
-            if (selectedNews != null) {
-                new ViewUserNewsJFrame(selectedNews).setVisible(true); // Pass only the News object
+            // Fetch the selected news item from the repository
+            Optional<News> optionalNews = repository.selectNews(newsId);
+
+            if (optionalNews.isPresent()) {
+                News selectedNews = optionalNews.get();
+
+                // Debugging: Log the thumbnail image path
+                System.out.println("Thumbnail Image Path: " + selectedNews.getThumbnailImage());
+
+                // Open the ViewUserNewsJFrame with the selected news
+                new ViewUserNewsJFrame(selectedNews).setVisible(true);
             } else {
-                JOptionPane.showMessageDialog(this, "Unable to retrieve the selected news details.", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Selected news item not found in the database.", "Error", JOptionPane.ERROR_MESSAGE);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Failed to load news details: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Failed to retrieve news: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     } else {
         JOptionPane.showMessageDialog(this, "Please select a news item to view.", "Info", JOptionPane.INFORMATION_MESSAGE);
     }
 }
+
 
 
     /**

@@ -151,6 +151,7 @@ private void handleEditNews() {
 
  private void handleRSSUpload() {
         try {
+            
             // Fetch and parse the RSS feed
             InputStream inputStream = UrlConnectionFactory.getInputStream(xmlurl);
             RssFeed rssFeed = ParserFactory.parse(inputStream, RssFeed.class);
@@ -437,7 +438,8 @@ XMLDownloader.downloadXML(xmlurl, fileName);
     private javax.swing.JButton viewNewsButton;
     // End of variables declaration//GEN-END:variables
 
-private void saveRSSDataToDatabase(List<RssFeed.Channel.Item> items) {
+
+    private void saveRSSDataToDatabase(List<RssFeed.Channel.Item> items) {
     String insertQuery = "IF NOT EXISTS (SELECT 1 FROM News WHERE Title = ?) "
                        + "INSERT INTO News (Title, Description, ThumbnailImage, FullSizeImage, PublicationDate) "
                        + "VALUES (?, ?, ?, ?, ?)";
@@ -455,15 +457,30 @@ private void saveRSSDataToDatabase(List<RssFeed.Channel.Item> items) {
 
             // Download and save thumbnail image
             String thumbnailUrl = item.getMediaThumbnail() != null ? item.getMediaThumbnail().getUrl() : null;
-            String thumbnailPath = ImageDownloader.downloadImage(thumbnailUrl, saveDirectory); // Download image
+            String thumbnailPath = null;
+            if (thumbnailUrl != null && !thumbnailUrl.isEmpty()) {
+                try {
+                    thumbnailPath = ImageDownloader.downloadImage(thumbnailUrl, saveDirectory); // Download image
+                    thumbnailPath = thumbnailPath.replace("src/main/resources/otherSources/", ""); // Convert to relative path
+                } catch (Exception e) {
+                    System.err.println("Failed to download thumbnail image: " + e.getMessage());
+                }
+            }
+            preparedStatement.setString(4, thumbnailPath); // Save relative path to thumbnail
             System.out.println("Thumbnail Path: " + thumbnailPath);
-            preparedStatement.setString(4, thumbnailPath); // Relative path to thumbnail
-            System.out.println("Inserting Thumbnail Path to Database: " + thumbnailPath);
-            
+
             // Download and save full-size image (if available)
             String fullSizeUrl = item.getMediaContent() != null ? item.getMediaContent().getUrl() : null;
-            String fullSizePath = ImageDownloader.downloadImage(fullSizeUrl, saveDirectory); // Download image
-            preparedStatement.setString(5, fullSizePath); // Relative path to full-size image
+            String fullSizePath = null;
+            if (fullSizeUrl != null && !fullSizeUrl.isEmpty()) {
+                try {
+                    fullSizePath = ImageDownloader.downloadImage(fullSizeUrl, saveDirectory); // Download image
+                    fullSizePath = fullSizePath.replace("src/main/resources/otherSources/", ""); // Convert to relative path
+                } catch (Exception e) {
+                    System.err.println("Failed to download full-size image: " + e.getMessage());
+                }
+            }
+            preparedStatement.setString(5, fullSizePath); // Save relative path to full-size image
 
             // Parse the publication date
             String pubDate = item.getPublicationDate();
@@ -488,7 +505,6 @@ private void saveRSSDataToDatabase(List<RssFeed.Channel.Item> items) {
         throw new RuntimeException("Failed to save RSS data to the database: " + e.getMessage());
     }
 }
-
 
 
 private java.sql.Timestamp parsePublicationDate(String pubDate) {

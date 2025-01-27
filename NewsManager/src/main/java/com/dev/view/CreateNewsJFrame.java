@@ -92,26 +92,40 @@ private void saveNews() {
     }
 }
 
+  private void uploadImage() {
+    JFileChooser fileChooser = new JFileChooser();
+    fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY); // Allow only files
+    int returnValue = fileChooser.showOpenDialog(this);
 
-    private void uploadImage() {
-        JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        int returnValue = fileChooser.showOpenDialog(this);
+    if (returnValue == JFileChooser.APPROVE_OPTION) {
+        File selectedFile = fileChooser.getSelectedFile();
+        String saveDirectory = "src/main/resources/otherSources/assets"; // Ensure it matches the download location
+        String fileName = "news_" + System.currentTimeMillis() + "_" + selectedFile.getName();
 
-        if (returnValue == JFileChooser.APPROVE_OPTION) {
-            File selectedFile = fileChooser.getSelectedFile();
-            String fileName = "news_" + System.currentTimeMillis() + "_" + selectedFile.getName();
+        try {
+            // Save the image to the assets directory
+            String imagePath = ImageDownloader.downloadImage(selectedFile.toURI().toString(), saveDirectory);
 
-            try {
-                String imagePath = ImageDownloader.downloadImage(selectedFile.toURI().toString(), fileName);
-                imageLabel.setIcon(new ImageIcon(imagePath));
-                imageLabel.putClientProperty("imagePath", imagePath);
-            } catch (Exception e) {
-                e.printStackTrace();
-                JOptionPane.showMessageDialog(this, "Failed to upload image: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            // Display the uploaded image on the label
+            File imageFile = new File(imagePath);
+            if (imageFile.exists()) {
+                ImageIcon imageIcon = new ImageIcon(imageFile.getAbsolutePath());
+                Image scaledImage = imageIcon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
+                imageLabel.setIcon(new ImageIcon(scaledImage));
+                imageLabel.setText(""); // Clear any text
+                imageLabel.putClientProperty("imagePath", "assets/" + imageFile.getName()); // Save relative path
+            } else {
+                System.out.println("Image file not found at: " + imageFile.getAbsolutePath());
+                JOptionPane.showMessageDialog(this, "Failed to locate uploaded image.", "Error", JOptionPane.ERROR_MESSAGE);
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Failed to upload image: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
+}
+
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -131,6 +145,8 @@ private void saveNews() {
         uploadImageButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        imageLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 
         saveButton.setText("Create");
         saveButton.addActionListener(new java.awt.event.ActionListener() {

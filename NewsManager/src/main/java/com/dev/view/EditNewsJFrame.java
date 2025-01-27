@@ -46,19 +46,49 @@ public class EditNewsJFrame extends javax.swing.JFrame {
     /**
      * Populates the fields with the existing news data.
      */
-    private void populateFields(String title, String description, String imagePath) {
-        titleField.setText(title);
-        descriptionArea.setText(description);
+   private void populateFields(String title, String description, String imagePath) {
+    titleField.setText(title);
+    descriptionArea.setText(description);
 
-        if (imagePath != null && !imagePath.isEmpty()) {
-            ImageIcon imageIcon = new ImageIcon(imagePath);
+    if (imagePath != null && !imagePath.isEmpty()) {
+        // Resolve the path to the existing image
+        String relativePath = "src/main/resources/otherSources/" + imagePath;
+        File imageFile = new File(relativePath);
+
+        if (imageFile.exists()) {
+            // Display the existing image
+            ImageIcon imageIcon = new ImageIcon(imageFile.getAbsolutePath());
             Image scaledImage = imageIcon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
             imageLabel.setIcon(new ImageIcon(scaledImage));
-            imageLabel.putClientProperty("imagePath", imagePath); // Save the image path for later use
+            imageLabel.setText(""); // Clear "No Image Available" text
+            imageLabel.putClientProperty("imagePath", imagePath); // Save the current image path
         } else {
-            imageLabel.setText("No Image Available");
+            System.out.println("Image not found: " + imageFile.getAbsolutePath());
+            setPlaceholderImage(); // Use a placeholder if the image is not found
         }
+    } else {
+        // No image path provided
+        setPlaceholderImage();
     }
+}
+
+/**
+ * Sets a placeholder image if no existing image is found.
+ */
+private void setPlaceholderImage() {
+    String placeholderPath = "src/main/resources/otherSources/assets/placeholder.png";
+    File placeholderFile = new File(placeholderPath);
+
+    if (placeholderFile.exists()) {
+        ImageIcon placeholderIcon = new ImageIcon(placeholderFile.getAbsolutePath());
+        Image scaledPlaceholder = placeholderIcon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
+        imageLabel.setIcon(new ImageIcon(scaledPlaceholder));
+        imageLabel.setText(""); // Clear "No Image Available" text
+    } else {
+        System.out.println("Placeholder image not found at: " + placeholderPath);
+        imageLabel.setText("No Image Available");
+    }
+}
    private void saveNewsUpdates() {
         String title = titleField.getText();
         String description = descriptionArea.getText();
@@ -202,8 +232,6 @@ private JMenuBar createMenuBar() {
             }
         });
 
-        titleField.setText("textField1");
-
         jButton1.setText("Upload Image");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -211,7 +239,7 @@ private JMenuBar createMenuBar() {
             }
         });
 
-        imageLabel.setText("Image ");
+        imageLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 
         deleteButton.setText("Delete");
         deleteButton.addActionListener(new java.awt.event.ActionListener() {
@@ -225,53 +253,50 @@ private JMenuBar createMenuBar() {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel1)
-                            .addComponent(imageLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jButton1)
-                                .addGap(0, 0, Short.MAX_VALUE))
-                            .addComponent(titleField, javax.swing.GroupLayout.DEFAULT_SIZE, 320, Short.MAX_VALUE)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(34, 34, 34)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(descriptionArea, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(saveButton)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(deleteButton)
-                                .addGap(32, 32, 32)))))
-                .addContainerGap())
-            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel2)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(imageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel2)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(descriptionArea, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(19, 19, 19))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addGap(8, 8, 8)
+                        .addComponent(titleField, javax.swing.GroupLayout.DEFAULT_SIZE, 391, Short.MAX_VALUE)
+                        .addContainerGap())
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(saveButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(deleteButton)
+                        .addGap(33, 33, 33))))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(151, 151, 151)
+                .addComponent(jButton1)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(imageLabel)
-                    .addComponent(jButton1))
-                .addGap(18, 18, 18)
+                .addComponent(imageLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 23, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel1)
                     .addComponent(titleField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(descriptionArea, javax.swing.GroupLayout.PREFERRED_SIZE, 171, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(95, 95, 95)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(saveButton)
                     .addComponent(deleteButton))
-                .addGap(11, 11, 11))
+                .addContainerGap())
         );
 
         pack();

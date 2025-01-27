@@ -92,22 +92,50 @@ private void populateFields() {
     titleField.setText(news.getTitle());
     descriptionArea.setText(news.getDescription());
     userNameField.setText(currentUsername); // Set the logged-in user's username
+
     // Display the image
     if (news.getThumbnailImage() != null && !news.getThumbnailImage().isEmpty()) {
-        String relativePath = "src/main/resources/" + news.getThumbnailImage();
+        // Correctly construct the path for images in "otherSources/assets"
+        String relativePath = "src/main/resources/otherSources/" + news.getThumbnailImage();
         File imageFile = new File(relativePath);
+
         if (imageFile.exists()) {
-            ImageIcon imageIcon = new ImageIcon(relativePath);
+            // Image found, load it
+            ImageIcon imageIcon = new ImageIcon(imageFile.getAbsolutePath());
             Image scaledImage = imageIcon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
             imageLabel.setIcon(new ImageIcon(scaledImage));
+            imageLabel.setText(""); // Clear any "No Image Found!" text
         } else {
-            imageLabel.setText("No Image Found!");
+            System.out.println("Image file not found: " + imageFile.getAbsolutePath());
+            // Use a placeholder image if the thumbnail is missing
+            setPlaceholderImage();
         }
     } else {
+        // No thumbnail provided
+        setPlaceholderImage();
+    }
+}
+
+// Helper method to set the placeholder image
+private void setPlaceholderImage() {
+    String placeholderPath = "src/main/resources/otherSources/assets/placeholder.png";
+    File placeholderFile = new File(placeholderPath);
+
+    if (placeholderFile.exists()) {
+        ImageIcon placeholderIcon = new ImageIcon(placeholderFile.getAbsolutePath());
+        Image scaledPlaceholder = placeholderIcon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
+        imageLabel.setIcon(new ImageIcon(scaledPlaceholder));
+        imageLabel.setText(""); // Clear "No Image Found!" if placeholder exists
+    } else {
+        System.out.println("Placeholder image not found at: " + placeholderPath);
+        imageLabel.setIcon(null);
         imageLabel.setText("No Image Found!");
     }
 }
 
+/**
+ * Sets a placeholder image when the actual image is not found or invalid.
+ */
 
    private void saveComment() {
     String commentText = commentArea.getText();

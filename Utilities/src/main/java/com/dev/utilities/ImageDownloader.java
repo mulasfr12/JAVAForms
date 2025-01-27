@@ -8,36 +8,32 @@ import java.nio.file.Paths;
 public class ImageDownloader {
 
     // Downloads an image from a URL and saves it to a local directory
-    public static String downloadImage(String imageUrl, String saveDirectory) {
-        if (imageUrl == null || imageUrl.isEmpty()) {
-            return null;
-        }
+   public static String downloadImage(String imageUrl, String saveDirectory) throws Exception {
+    if (imageUrl == null || imageUrl.isEmpty()) {
+        throw new IllegalArgumentException("Image URL is null or empty.");
+    }
 
-        try {
-            // Ensure the directory exists
-            Files.createDirectories(Paths.get(saveDirectory));
+    // Ensure the directory exists
+    File directory = new File(saveDirectory);
+    if (!directory.exists()) {
+        directory.mkdirs(); // Create the directory if it doesn't exist
+    }
 
-            // Extract the file name from the URL
-            String fileName = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
-            String filePath = saveDirectory + File.separator + fileName;
+    // Extract the file name from the URL
+    String fileName = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
+    String filePath = saveDirectory + File.separator + fileName;
 
-            // Download the image
-            try (InputStream inputStream = new URL(imageUrl).openStream();
-                 FileOutputStream outputStream = new FileOutputStream(filePath)) {
-
-                byte[] buffer = new byte[1024];
-                int bytesRead;
-                while ((bytesRead = inputStream.read(buffer)) != -1) {
-                    outputStream.write(buffer, 0, bytesRead);
-                }
-            }
-
-            System.out.println("Image downloaded to: " + filePath);
-            return "assets/" + fileName; // Return relative path
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
+    try (InputStream inputStream = new URL(imageUrl).openStream();
+         FileOutputStream outputStream = new FileOutputStream(filePath)) {
+        byte[] buffer = new byte[1024];
+        int bytesRead;
+        while ((bytesRead = inputStream.read(buffer)) != -1) {
+            outputStream.write(buffer, 0, bytesRead);
         }
     }
+
+    System.out.println("Image downloaded to: " + filePath); // Debug log
+    return filePath; // Return absolute path of the saved image
+}
+
 }

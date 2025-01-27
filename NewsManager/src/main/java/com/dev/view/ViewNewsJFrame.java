@@ -30,26 +30,45 @@ public ViewNewsJFrame() {
     }
 
     public ViewNewsJFrame(int newsId, String title, String description, String imagePath) {
-        this.newsId = newsId;
-        initComponents();
-         setJMenuBar(createMenuBar());
-        populateFields(title, description, imagePath);
-    }
-    
-    private void populateFields(String title, String description, String imagePath) {
+    this.newsId = newsId;
+    initComponents();
+    setJMenuBar(createMenuBar());
+    populateFields(title, description, imagePath);
+}
+
+private void populateFields(String title, String description, String imagePath) {
     titleField.setText(title);
     descriptionArea.setText(description);
 
     // Resolve the path to the image
-    String relativePath = "src/main/resources/" + imagePath; // Adjust for the current location
+    String relativePath = "src/main/resources/otherSources/" + imagePath; // Adjust path for current directory
     File imageFile = new File(relativePath);
 
     if (imageFile.exists()) {
-        ImageIcon imageIcon = new ImageIcon(relativePath); // Load the image
-        Image scaledImage = imageIcon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH); // Scale image
-        imageLabel.setIcon(new ImageIcon(scaledImage)); // Set scaled image to label
+        // Image found, load it
+        ImageIcon imageIcon = new ImageIcon(imageFile.getAbsolutePath());
+        Image scaledImage = imageIcon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
+        imageLabel.setIcon(new ImageIcon(scaledImage));
+        imageLabel.setText(""); // Clear "No Image Found!" text if the image exists
     } else {
-        imageLabel.setText("No Image Found!"); // Fallback text if image not found
+        System.out.println("Image not found: " + imageFile.getAbsolutePath()); // Debugging output
+        setPlaceholderImage(); // Use placeholder if image is not found
+    }
+}
+
+// Helper method to handle placeholder images
+private void setPlaceholderImage() {
+    String placeholderPath = "src/main/resources/otherSources/assets/placeholder.png";
+    File placeholderFile = new File(placeholderPath);
+
+    if (placeholderFile.exists()) {
+        ImageIcon placeholderIcon = new ImageIcon(placeholderFile.getAbsolutePath());
+        Image scaledPlaceholder = placeholderIcon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
+        imageLabel.setIcon(new ImageIcon(scaledPlaceholder));
+        imageLabel.setText(""); // Clear "No Image Found!" if placeholder exists
+    } else {
+        System.out.println("Placeholder image not found at: " + placeholderPath); // Debugging output
+        imageLabel.setText("No Image Found!");
     }
 }
 
@@ -105,6 +124,8 @@ public ViewNewsJFrame() {
         descriptionArea = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        imageLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 
         titleLabel.setText("Title");
 

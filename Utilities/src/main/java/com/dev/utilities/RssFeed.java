@@ -80,12 +80,12 @@ public class RssFeed {
             @XmlElement(name = "pubDate")
             private String publicationDate;
 
-            @XmlElement(name = "media:thumbnail", namespace = "http://search.yahoo.com/mrss/")
+           @XmlElement(name = "thumbnail", namespace = "http://search.yahoo.com/mrss/")
             private MediaThumbnail mediaThumbnail;
 
-            @XmlElement(name = "media:content", namespace = "http://search.yahoo.com/mrss/")
-            private MediaContent mediaContent;
 
+            @XmlElement(name = "content", namespace = "http://search.yahoo.com/mrss/")
+            private MediaContent mediaContent;
             public String getTitle() {
                 return title;
             }
@@ -111,10 +111,12 @@ public class RssFeed {
             }
 
             public MediaThumbnail getMediaThumbnail() {
-                if (mediaThumbnail != null && mediaThumbnail.getUrl() != null) {
-                    System.out.println("Parsed Thumbnail URL: " + mediaThumbnail.getUrl());
+                if (mediaThumbnail == null) {
+                    System.out.println("MediaThumbnail object is null for item: " + title);
+                } else if (mediaThumbnail.getUrl() == null) {
+                    System.out.println("MediaThumbnail URL is null for item: " + title);
                 } else {
-                    System.out.println("No Thumbnail URL found for item: " + title);
+                    System.out.println("Parsed Thumbnail URL: " + mediaThumbnail.getUrl());
                 }
                 return mediaThumbnail;
             }
