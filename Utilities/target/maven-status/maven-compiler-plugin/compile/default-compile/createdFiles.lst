@@ -1,14 +1,13 @@
-com\dev\utilities\Item.class
 com\dev\utilities\RssFeed$Channel$MediaContent.class
 com\dev\utilities\RssFeed.class
+com\dev\utilities\ThumbnailDownloaderUtil.class
+com\dev\utilities\XMLDownloader.class
 com\dev\utilities\ImageDownloader.class
 com\dev\utilities\RssFeed$Channel$MediaThumbnail.class
 com\dev\utilities\DBConnection.class
-com\dev\utilities\Item$MediaContent.class
 com\dev\factory\UrlConnectionFactory.class
 com\dev\utilities\RssFeed$Channel.class
 com\dev\utilities\UserSession.class
 com\dev\utilities\JAXBUtils.class
 com\dev\utilities\RssFeed$Channel$Item.class
 com\dev\factory\ParserFactory.class
-com\dev\utilities\Item$MediaThumbnail.class

@@ -28,7 +28,7 @@
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
-                      <Component id="jScrollPane1" pref="699" max="32767" attributes="0"/>
+                      <Component id="jScrollPane1" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" attributes="0">
@@ -41,6 +41,8 @@
                       <Component id="deleteAllNewsButton" min="-2" pref="124" max="-2" attributes="0"/>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Component id="refreshButton" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                      <Component id="DownloadXmlBtn" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="32767" attributes="0"/>
                       <Component id="editNewsButton" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="27" max="-2" attributes="0"/>
@@ -62,6 +64,7 @@
                   <Component id="viewNewsButton" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="deleteAllNewsButton" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="refreshButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="DownloadXmlBtn" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -163,6 +166,14 @@
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="refreshButtonActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="DownloadXmlBtn">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Download xml"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="DownloadXmlBtnActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>

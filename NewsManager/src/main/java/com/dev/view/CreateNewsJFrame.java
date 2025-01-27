@@ -23,13 +23,46 @@ import java.time.LocalDateTime;
 
 public class CreateNewsJFrame extends javax.swing.JFrame {
 
+    private boolean isAdmin;
     /**
      * Creates new form CreateNewsJFrame
      */
-    public CreateNewsJFrame() {
+    public CreateNewsJFrame(boolean isAdmin) {
+        this.isAdmin = isAdmin;
         initComponents();
+        setJMenuBar(createMenuBar());
     }
-    
+    private JMenuBar createMenuBar() {
+        JMenuBar menuBar = new JMenuBar();
+
+        // Home Menu
+        JMenu homeMenu = new JMenu("Home");
+        JMenuItem homeItem = new JMenuItem("Go to Dashboard");
+        homeItem.addActionListener(e -> {
+            this.dispose(); // Close the current frame
+            if (isAdmin) {
+                 AdminDashboardJFrame.getInstance().setVisible(true); // Navigate to Admin Dashboard
+            } else {
+                new UserDashboardJFrame().setVisible(true); // Navigate to User Dashboard
+            }
+        });
+        homeMenu.add(homeItem);
+
+        // Log Out Menu
+        JMenu logoutMenu = new JMenu("Exit");
+        JMenuItem logoutItem = new JMenuItem("Close App");
+        logoutItem.addActionListener(e -> {
+            this.dispose(); // Close the current frame
+            new LoginPanel().setVisible(true); // Navigate to Login Screen
+        });
+        logoutMenu.add(logoutItem);
+
+        // Add menus to the menu bar
+        menuBar.add(homeMenu);
+        menuBar.add(logoutMenu);
+
+        return menuBar;
+    }
     private final SqlRepository repository = new SqlRepository();
 private void saveNews() {
    String title = titleField.getText();
@@ -214,11 +247,7 @@ private void saveNews() {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new CreateNewsJFrame().setVisible(true);
-            }
-        });
+        SwingUtilities.invokeLater(() -> new CreateNewsJFrame(true).setVisible(true));
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

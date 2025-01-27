@@ -1,11 +1,10 @@
-com\dev\view\ViewUserNewsJFrame$2.class
 com\dev\view\UserDashboardJFrame$1.class
 com\dev\view\AdminDashboardJFrame$2.class
 com\dev\view\ViewUserNewsJFrame.class
 com\dev\view\UserDashboardJFrame.class
 com\dev\newsmanager\AuthenticationJFrame.class
 com\dev\view\AdminDashboardJFrame$4.class
-com\dev\view\EditNewsJFrame$4.class
+com\dev\view\AdminDashboardJFrame$7.class
 com\dev\view\RegisterPanel$2.class
 com\dev\view\EditNewsJFrame.class
 com\dev\view\ViewNewsJFrame$1.class
@@ -25,9 +24,6 @@ com\dev\view\LoginPanel$1.class
 com\dev\view\CreateNewsJFrame.class
 com\dev\view\AdminDashboardJFrame$6.class
 com\dev\view\EditNewsJFrame$2.class
-com\dev\view\CreateNewsJFrame$3.class
 com\dev\view\AdminDashboardJFrame$1.class
-com\dev\view\ViewNewsJFrame$2.class
 com\dev\view\RegisterPanel.class
 com\dev\view\ViewUserNewsJFrame$1.class
-com\dev\view\UserDashboardJFrame$2.class

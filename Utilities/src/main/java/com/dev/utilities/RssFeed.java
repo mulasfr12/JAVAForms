@@ -80,10 +80,10 @@ public class RssFeed {
             @XmlElement(name = "pubDate")
             private String publicationDate;
 
-            @XmlElement(name = "media:thumbnail")
+            @XmlElement(name = "media:thumbnail", namespace = "http://search.yahoo.com/mrss/")
             private MediaThumbnail mediaThumbnail;
 
-            @XmlElement(name = "media:content")
+            @XmlElement(name = "media:content", namespace = "http://search.yahoo.com/mrss/")
             private MediaContent mediaContent;
 
             public String getTitle() {
@@ -111,6 +111,11 @@ public class RssFeed {
             }
 
             public MediaThumbnail getMediaThumbnail() {
+                if (mediaThumbnail != null && mediaThumbnail.getUrl() != null) {
+                    System.out.println("Parsed Thumbnail URL: " + mediaThumbnail.getUrl());
+                } else {
+                    System.out.println("No Thumbnail URL found for item: " + title);
+                }
                 return mediaThumbnail;
             }
 
@@ -124,6 +129,17 @@ public class RssFeed {
 
             public void setMediaContent(MediaContent mediaContent) {
                 this.mediaContent = mediaContent;
+            }
+
+            public java.sql.Timestamp getPublicationDateAsTimestamp() {
+                try {
+                    SimpleDateFormat format = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z", Locale.ENGLISH);
+                    Date date = format.parse(publicationDate);
+                    return new java.sql.Timestamp(date.getTime());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return null; // Handle invalid date formats gracefully
+                }
             }
         }
 
@@ -156,16 +172,5 @@ public class RssFeed {
                 this.url = url;
             }
         }
-        private java.sql.Timestamp parsePublicationDate(String pubDate) {
-    try {
-        SimpleDateFormat format = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z", Locale.ENGLISH);
-        Date date = format.parse(pubDate);
-        return new java.sql.Timestamp(date.getTime());
-    } catch (Exception e) {
-        e.printStackTrace();
-        return null; // Handle invalid date formats
-    }
-}
-
     }
 }

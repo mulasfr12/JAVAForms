@@ -168,7 +168,8 @@ private void openAdminDashboard() {
     if (topFrame != null) {
         topFrame.dispose(); // Close the current frame
     }
-    AdminDashboardJFrame adminDashboard = new AdminDashboardJFrame();
+    // Use the Singleton instance
+    var adminDashboard = AdminDashboardJFrame.getInstance();
     adminDashboard.setVisible(true); // Show the admin dashboard
     adminDashboard.setLocationRelativeTo(null); // Center the admin dashboard
 }

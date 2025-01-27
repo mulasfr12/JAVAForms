@@ -13,6 +13,9 @@ import java.io.File;
 import java.util.Date;
 import java.util.List;
 import javax.swing.ImageIcon;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
 /**
@@ -21,21 +24,69 @@ import javax.swing.JOptionPane;
  */
 public class ViewUserNewsJFrame extends javax.swing.JFrame {
 
+     private static ViewUserNewsJFrame instance;
     private final SqlRepository repository = new SqlRepository();
-    private final News news;
-    /**
-     * Creates new form ViewUserNewsJFrame
-     */
+    private  News news;
    private String currentUsername;
 
 public ViewUserNewsJFrame(News news) {
-    this.news = news;
-    this.currentUsername = UserSession.getInstance().getUsername(); // Get the logged-in username
-    initComponents();
-    populateFields();
-    loadComments();
-}
+        this.news = news;
+        this.currentUsername = UserSession.getInstance().getUsername(); // Get the logged-in username
+        initComponents();
+        setJMenuBar(createMenuBar());
+        populateFields();
+        loadComments();
+    }
+private ViewUserNewsJFrame() {
+        initComponents();
+        setJMenuBar(createMenuBar());
+    }
+public static ViewUserNewsJFrame getInstance() {
+        if (instance == null) {
+            instance = new ViewUserNewsJFrame();
+        }
+        return instance;
+    }
+public void setNews(News news) {
+        this.news = news;
+        this.currentUsername = UserSession.getInstance().getUsername();
+        populateFields();
+        loadComments();
+    }
+ private JMenuBar createMenuBar() {
+        JMenuBar menuBar = new JMenuBar();
 
+        // Home Menu
+        JMenu homeMenu = new JMenu("Home");
+        JMenuItem dashboardItem = new JMenuItem("Go to Dashboard");
+        dashboardItem.addActionListener(e -> {
+            this.dispose();
+            UserDashboardJFrame.getInstance().setVisible(true);
+        });
+        homeMenu.add(dashboardItem);
+
+        // Account Menu
+        JMenu accountMenu = new JMenu("Account");
+        JMenuItem logoutItem = new JMenuItem("Log Out");
+        logoutItem.addActionListener(e -> {
+            int confirmation = JOptionPane.showConfirmDialog(
+                this,
+                "Are you sure you want to log out and exit the application?",
+                "Logout Confirmation",
+                JOptionPane.YES_NO_OPTION
+            );
+
+            if (confirmation == JOptionPane.YES_OPTION) {
+                System.exit(0);
+            }
+        });
+        accountMenu.add(logoutItem);
+
+        menuBar.add(homeMenu);
+        menuBar.add(accountMenu);
+
+        return menuBar;
+    }
 
 private void populateFields() {
     titleField.setText(news.getTitle());
@@ -224,9 +275,8 @@ private void loadComments() {
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
-    java.awt.EventQueue.invokeLater(new Runnable() {
-        public void run() {
+  public static void main(String[] args) {
+        java.awt.EventQueue.invokeLater(() -> {
             // Simulate a logged-in user
             UserSession.getInstance().setUsername("testUser");
 
@@ -234,13 +284,10 @@ private void loadComments() {
             News dummyNews = new News(1, "Sample Title", "Sample Description", "assets/sample_image.jpg", null, null, null);
 
             // Open the view
-            new ViewUserNewsJFrame(dummyNews).setVisible(true);
-        }
-    });
-}
-
-
-
+            ViewUserNewsJFrame.getInstance().setNews(dummyNews);
+            ViewUserNewsJFrame.getInstance().setVisible(true);
+        });
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextArea commentArea;

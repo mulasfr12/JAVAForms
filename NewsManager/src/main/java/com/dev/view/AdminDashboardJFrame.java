@@ -8,10 +8,9 @@ import com.dev.dal.sql.SqlRepository;
 import com.dev.factory.ParserFactory;
 import com.dev.factory.UrlConnectionFactory;
 import com.dev.utilities.ImageDownloader;
-import com.dev.utilities.Item;
 import com.dev.utilities.RssFeed;
+import com.dev.utilities.XMLDownloader;
 import javax.swing.*;
-import java.awt.*;
 import java.io.File;
 import java.io.InputStream;
 import java.sql.Connection;
@@ -29,19 +28,28 @@ import javax.swing.table.DefaultTableModel;
 
 public class AdminDashboardJFrame extends javax.swing.JFrame {
 
-    /**
-     * Creates new form AdminDashboardJFrame
-     */
-    public AdminDashboardJFrame() {
+   private static AdminDashboardJFrame instance;
+  
+   private AdminDashboardJFrame() {
         initComponents();
         loadNews();
+        setJMenuBar(createMenuBar());
     }
+    public static AdminDashboardJFrame getInstance() {
+        if (instance == null) {
+            instance = new AdminDashboardJFrame();
+        }
+        return instance;
+    }
+     String xmlurl = "https://feeds.bbci.co.uk/news/entertainment_and_arts/rss.xml";
+    
+    
      private final SqlRepository repository = new SqlRepository();
 private void loadNews() {
-    String[] columnNames = {"ID", "Title", "Description", "Image Path"}; // Include Image Path
+    String[] columnNames = {"ID", "Title", "Description", "Thumbnail Path"}; // Updated column name
     DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0);
 
-    String query = "SELECT NewsID, Title, Description, ThumbnailImage FROM News"; // Ensure ThumbnailImage is selected
+    String query = "SELECT NewsID, Title, Description, ThumbnailImage FROM News";
 
     try (Connection connection = DataSourceSingleton.getInstance().getConnection();
          PreparedStatement preparedStatement = connection.prepareStatement(query);
@@ -63,6 +71,41 @@ private void loadNews() {
         JOptionPane.showMessageDialog(this, "Failed to load news: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
     }
 }
+private JMenuBar createMenuBar() {
+        JMenuBar menuBar = new JMenuBar();
+
+        // Home Menu
+        JMenu homeMenu = new JMenu("Home");
+        JMenuItem dashboardItem = new JMenuItem("Refresh Dashboard");
+        dashboardItem.addActionListener(e -> {
+            loadNews(); // Reload the news table
+            JOptionPane.showMessageDialog(this, "Dashboard refreshed!", "Info", JOptionPane.INFORMATION_MESSAGE);
+        });
+        homeMenu.add(dashboardItem);
+
+        // Account Menu
+        JMenu accountMenu = new JMenu("Account");
+        JMenuItem logoutItem = new JMenuItem("Log Out");
+        logoutItem.addActionListener(e -> {
+            int confirmation = JOptionPane.showConfirmDialog(
+                this,
+                "Are you sure you want to log out and exit the application?",
+                "Logout Confirmation",
+                JOptionPane.YES_NO_OPTION
+            );
+
+            if (confirmation == JOptionPane.YES_OPTION) {
+                System.exit(0);
+            }
+        });
+        accountMenu.add(logoutItem);
+
+        menuBar.add(homeMenu);
+        menuBar.add(accountMenu);
+
+        return menuBar;
+    }
+
 public void reloadNewsTable() {
     DefaultTableModel tableModel = (DefaultTableModel) newsTable.getModel();
     tableModel.setRowCount(0); // Clear existing rows
@@ -107,11 +150,9 @@ private void handleEditNews() {
 }
 
  private void handleRSSUpload() {
-        String rssFeedUrl = "https://feeds.bbci.co.uk/news/entertainment_and_arts/rss.xml";
-
         try {
             // Fetch and parse the RSS feed
-            InputStream inputStream = UrlConnectionFactory.getInputStream(rssFeedUrl);
+            InputStream inputStream = UrlConnectionFactory.getInputStream(xmlurl);
             RssFeed rssFeed = ParserFactory.parse(inputStream, RssFeed.class);
 
             // Save parsed data to the database
@@ -145,6 +186,7 @@ private void handleEditNews() {
         viewNewsButton = new javax.swing.JButton();
         deleteAllNewsButton = new javax.swing.JButton();
         refreshButton = new javax.swing.JButton();
+        DownloadXmlBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Admin Dashboard");
@@ -204,6 +246,13 @@ private void handleEditNews() {
             }
         });
 
+        DownloadXmlBtn.setText("Download xml");
+        DownloadXmlBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                DownloadXmlBtnActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -212,7 +261,7 @@ private void handleEditNews() {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 699, Short.MAX_VALUE)
+                        .addComponent(jScrollPane1)
                         .addContainerGap())
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(uploadRSSButton, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -224,6 +273,8 @@ private void handleEditNews() {
                         .addComponent(deleteAllNewsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(refreshButton)
+                        .addGap(18, 18, 18)
+                        .addComponent(DownloadXmlBtn)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(editNewsButton)
                         .addGap(27, 27, 27))))
@@ -240,7 +291,8 @@ private void handleEditNews() {
                     .addComponent(createNewsButton)
                     .addComponent(viewNewsButton)
                     .addComponent(deleteAllNewsButton)
-                    .addComponent(refreshButton))
+                    .addComponent(refreshButton)
+                    .addComponent(DownloadXmlBtn))
                 .addContainerGap())
         );
 
@@ -269,7 +321,7 @@ private void handleEditNews() {
 
     private void createNewsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createNewsButtonActionPerformed
         // TODO add your handling code here: 
-       new CreateNewsJFrame().setVisible(true);
+       SwingUtilities.invokeLater(() -> new CreateNewsJFrame(true).setVisible(true));
     }//GEN-LAST:event_createNewsButtonActionPerformed
 
     private void viewNewsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewNewsButtonActionPerformed
@@ -334,6 +386,14 @@ private void handleEditNews() {
     }
     }//GEN-LAST:event_refreshButtonActionPerformed
 
+    private void DownloadXmlBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DownloadXmlBtnActionPerformed
+        // TODO add your handling code here:
+        
+String fileName = "latest-feed.xml";
+
+XMLDownloader.downloadXML(xmlurl, fileName);
+    }//GEN-LAST:event_DownloadXmlBtnActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -362,12 +422,11 @@ private void handleEditNews() {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> {
-            new AdminDashboardJFrame().setVisible(true);
-        });
+       java.awt.EventQueue.invokeLater(() -> AdminDashboardJFrame.getInstance().setVisible(true));
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton DownloadXmlBtn;
     private javax.swing.JButton createNewsButton;
     private javax.swing.JButton deleteAllNewsButton;
     private javax.swing.JButton editNewsButton;
@@ -384,6 +443,7 @@ private void saveRSSDataToDatabase(List<RssFeed.Channel.Item> items) {
                        + "VALUES (?, ?, ?, ?, ?)";
 
     SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z", java.util.Locale.ENGLISH); // Adjust to match RSS format
+    String saveDirectory = "src/main/resources/otherSources/assets"; // Directory for storing images
 
     try (Connection connection = DataSourceSingleton.getInstance().getConnection();
          PreparedStatement preparedStatement = connection.prepareStatement(insertQuery)) {
@@ -392,8 +452,18 @@ private void saveRSSDataToDatabase(List<RssFeed.Channel.Item> items) {
             preparedStatement.setString(1, item.getTitle()); // Check for duplicates
             preparedStatement.setString(2, item.getTitle()); // Title
             preparedStatement.setString(3, item.getDescription()); // Description
-            preparedStatement.setString(4, item.getMediaThumbnail() != null ? item.getMediaThumbnail().getUrl() : null); // Thumbnail
-            preparedStatement.setString(5, item.getMediaContent() != null ? item.getMediaContent().getUrl() : null); // Full-size image
+
+            // Download and save thumbnail image
+            String thumbnailUrl = item.getMediaThumbnail() != null ? item.getMediaThumbnail().getUrl() : null;
+            String thumbnailPath = ImageDownloader.downloadImage(thumbnailUrl, saveDirectory); // Download image
+            System.out.println("Thumbnail Path: " + thumbnailPath);
+            preparedStatement.setString(4, thumbnailPath); // Relative path to thumbnail
+            System.out.println("Inserting Thumbnail Path to Database: " + thumbnailPath);
+            
+            // Download and save full-size image (if available)
+            String fullSizeUrl = item.getMediaContent() != null ? item.getMediaContent().getUrl() : null;
+            String fullSizePath = ImageDownloader.downloadImage(fullSizeUrl, saveDirectory); // Download image
+            preparedStatement.setString(5, fullSizePath); // Relative path to full-size image
 
             // Parse the publication date
             String pubDate = item.getPublicationDate();

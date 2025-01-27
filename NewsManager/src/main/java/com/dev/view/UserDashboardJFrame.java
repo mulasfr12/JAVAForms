@@ -19,12 +19,19 @@ import javax.swing.table.DefaultTableModel;
 public class UserDashboardJFrame extends javax.swing.JFrame {
 
     private final SqlRepository repository = new SqlRepository();
+     private static UserDashboardJFrame instance;
     /**
      * Creates new form UserDashboardJFrame
      */
     public UserDashboardJFrame() {
         initComponents();
         loadNews();
+    }
+    public static UserDashboardJFrame getInstance() {
+        if (instance == null) {
+            instance = new UserDashboardJFrame();
+        }
+        return instance;
     }
 private void loadNews() {
         String[] columnNames = {"ID", "Title", "Description"}; // Simplified columns for user
@@ -190,11 +197,8 @@ private void loadNews() {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new UserDashboardJFrame().setVisible(true);
-            }
-        });
+        java.awt.EventQueue.invokeLater(() -> UserDashboardJFrame.getInstance().setVisible(true));
+
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

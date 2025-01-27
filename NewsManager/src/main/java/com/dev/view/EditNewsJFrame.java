@@ -20,65 +20,72 @@ import java.sql.PreparedStatement;
 
 public class EditNewsJFrame extends javax.swing.JFrame {
 
-    private int newsId;
-    public EditNewsJFrame() {
-        // Default constructor for cases where no arguments are passed
-        initComponents();
-    }
-    private AdminDashboardJFrame owner; // Add this field to store the reference to AdminDashboardJFrame
+    private boolean isAdmin; // Indicates if the current user is an admin
+    private int newsId; // News ID to be edited
+    private AdminDashboardJFrame owner; // Reference to the Admin Dashboard for table refresh
+    private final SqlRepository repository = new SqlRepository(); // Repository for database operations
 
-public EditNewsJFrame(int newsId, String title, String description, String imagePath, AdminDashboardJFrame owner) {
-    this.newsId = newsId;
-    this.owner = owner; // Assign the owner reference
-    initComponents();
-    populateFields(title, description, imagePath);
-}
-    /**
-     * Creates new form EditNewsFrame
-     */
-   public EditNewsJFrame(int newsId, String title, String description, String imagePath) {
+    // Constructor for Admin usage with reference to the Admin Dashboard
+    public EditNewsJFrame(int newsId, String title, String description, String imagePath, AdminDashboardJFrame owner) {
         this.newsId = newsId;
+        this.owner = owner;
+        this.isAdmin = true;
         initComponents();
+        setJMenuBar(createMenuBar());
         populateFields(title, description, imagePath);
     }
-   
-private final SqlRepository repository = new SqlRepository();
-private void populateFields(String title, String description, String imagePath) {
+   // Constructor for general usage (e.g., user role)
+    public EditNewsJFrame(int newsId, String title, String description, String imagePath) {
+        this.newsId = newsId;
+        this.isAdmin = false;
+        initComponents();
+        setJMenuBar(createMenuBar());
+        populateFields(title, description, imagePath);
+    }
+
+    /**
+     * Populates the fields with the existing news data.
+     */
+    private void populateFields(String title, String description, String imagePath) {
         titleField.setText(title);
         descriptionArea.setText(description);
+
         if (imagePath != null && !imagePath.isEmpty()) {
-        ImageIcon imageIcon = new ImageIcon(imagePath); // Load the image
-        Image scaledImage = imageIcon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH); // Scale image
-        imageLabel.setIcon(new ImageIcon(scaledImage)); // Set the scaled image to the label
-    } else {
-        imageLabel.setText("No Image Available"); // Placeholder text if no image is set
+            ImageIcon imageIcon = new ImageIcon(imagePath);
+            Image scaledImage = imageIcon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
+            imageLabel.setIcon(new ImageIcon(scaledImage));
+            imageLabel.putClientProperty("imagePath", imagePath); // Save the image path for later use
+        } else {
+            imageLabel.setText("No Image Available");
+        }
     }
-    }
-
-    private void saveNewsUpdates() {
+   private void saveNewsUpdates() {
         String title = titleField.getText();
-    String description = descriptionArea.getText();
-    String imagePath = (String) imageLabel.getClientProperty("imagePath");
+        String description = descriptionArea.getText();
+        String imagePath = (String) imageLabel.getClientProperty("imagePath");
 
-    if (title.isEmpty() || description.isEmpty()) {
-        JOptionPane.showMessageDialog(this, "Title and description cannot be empty.", "Error", JOptionPane.ERROR_MESSAGE);
-        return;
+        if (title.isEmpty() || description.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Title and description cannot be empty.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        News updatedNews = new News(newsId, title, description, imagePath, null, null, null);
+
+        try {
+            repository.updateNews(newsId, updatedNews);
+            JOptionPane.showMessageDialog(this, "News updated successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+
+            if (owner != null) {
+                owner.reloadNewsTable(); // Refresh the Admin Dashboard table
+            }
+
+            this.dispose();
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Failed to update news: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
-
-    News updatedNews = new News(newsId, title, description, imagePath, null, null, null);
-
-    try {
-        repository.updateNews(newsId, updatedNews); // Use repository to handle the update
-        JOptionPane.showMessageDialog(this, "News updated successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
-     
-        this.dispose(); // Close the frame
-    } catch (Exception e) {
-        e.printStackTrace();
-        JOptionPane.showMessageDialog(this, "Failed to update news: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-    }
-    }
-
-    private void uploadImage() {
+   private void uploadImage() {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         int returnValue = fileChooser.showOpenDialog(this);
@@ -87,38 +94,81 @@ private void populateFields(String title, String description, String imagePath) 
             File selectedFile = fileChooser.getSelectedFile();
             String fileName = "news_" + newsId + "_" + selectedFile.getName();
 
-            // Download the image to the assets folder
             try {
                 String imagePath = ImageDownloader.downloadImage(selectedFile.toURI().toString(), fileName);
-                imageLabel.setIcon(new ImageIcon(imagePath));
-                imageLabel.putClientProperty("imagePath", imagePath); // Save the image path
+                ImageIcon imageIcon = new ImageIcon(imagePath);
+                Image scaledImage = imageIcon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
+                imageLabel.setIcon(new ImageIcon(scaledImage));
+                imageLabel.putClientProperty("imagePath", imagePath);
             } catch (Exception e) {
                 e.printStackTrace();
                 JOptionPane.showMessageDialog(this, "Failed to upload image: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
+
+    /**
+     * Deletes the current news item from the database.
+     */
     private void deleteNews() {
-    int confirmation = JOptionPane.showConfirmDialog(this,
-            "Are you sure you want to delete this news item?",
-            "Delete Confirmation",
-            JOptionPane.YES_NO_OPTION);
+        int confirmation = JOptionPane.showConfirmDialog(this, "Are you sure you want to delete this news item?",
+                "Delete Confirmation", JOptionPane.YES_NO_OPTION);
 
-    if (confirmation == JOptionPane.YES_OPTION) {
-        try {
-            repository.deleteNews(newsId); // Use repository to delete the news
-            JOptionPane.showMessageDialog(this, "News deleted successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
-            
-            if (owner != null) {
-                owner.reloadNewsTable(); // Refresh the table in AdminDashboardJFrame
+        if (confirmation == JOptionPane.YES_OPTION) {
+            try {
+                repository.deleteNews(newsId);
+                JOptionPane.showMessageDialog(this, "News deleted successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+
+                if (owner != null) {
+                    owner.reloadNewsTable(); // Refresh the Admin Dashboard table
+                }
+
+                this.dispose();
+            } catch (Exception e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Failed to delete news: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
-
-            this.dispose(); // Close the frame
-        } catch (Exception e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Failed to delete news: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
+
+private JMenuBar createMenuBar() {
+    JMenuBar menuBar = new JMenuBar();
+
+    // Home Menu
+    JMenu homeMenu = new JMenu("Home");
+    JMenuItem dashboardItem = new JMenuItem("Go to Dashboard");
+    dashboardItem.addActionListener(e -> {
+        this.dispose();
+        if (isAdmin) {
+              AdminDashboardJFrame.getInstance().setVisible(true);
+        } else {
+            new UserDashboardJFrame().setVisible(true);
+        }
+    });
+    homeMenu.add(dashboardItem);
+
+    // Account Menu
+    JMenu accountMenu = new JMenu("Exit App");
+    JMenuItem logoutItem = new JMenuItem("Close App");
+    logoutItem.addActionListener(e -> {
+        int confirmation = JOptionPane.showConfirmDialog(
+            this,
+            "Are you sure you want to log out and exit the application?",
+            "Logout Confirmation",
+            JOptionPane.YES_NO_OPTION
+        );
+
+        if (confirmation == JOptionPane.YES_OPTION) {
+            System.exit(0); // Exit the application
+        }
+    });
+    accountMenu.add(logoutItem);
+
+    // Add menus to the menu bar
+    menuBar.add(homeMenu);
+    menuBar.add(accountMenu);
+
+    return menuBar;
 }
 
     /**
@@ -271,11 +321,7 @@ private void populateFields(String title, String description, String imagePath) 
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new EditNewsJFrame().setVisible(true);
-            }
-        });
+       SwingUtilities.invokeLater(() -> new EditNewsJFrame(1, "Sample Title", "Sample Description", null).setVisible(true));
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

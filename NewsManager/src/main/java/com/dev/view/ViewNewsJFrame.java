@@ -7,6 +7,10 @@ package com.dev.view;
 import java.awt.Image;
 import java.io.File;
 import javax.swing.ImageIcon;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -18,14 +22,17 @@ public class ViewNewsJFrame extends javax.swing.JFrame {
      * Creates new form ViewNewsJFrame
      */
     private int newsId;
+    
   
 public ViewNewsJFrame() {       
         initComponents();
+        setJMenuBar(createMenuBar());
     }
 
     public ViewNewsJFrame(int newsId, String title, String description, String imagePath) {
         this.newsId = newsId;
         initComponents();
+         setJMenuBar(createMenuBar());
         populateFields(title, description, imagePath);
     }
     
@@ -46,7 +53,41 @@ public ViewNewsJFrame() {
     }
 }
 
+ private JMenuBar createMenuBar() {
+        JMenuBar menuBar = new JMenuBar();
 
+        // Home Menu
+        JMenu homeMenu = new JMenu("Home");
+        JMenuItem dashboardItem = new JMenuItem("Go to Dashboard");
+        dashboardItem.addActionListener(e -> {
+            this.dispose();
+             AdminDashboardJFrame.getInstance().setVisible(true); // Assuming this is for user navigation
+        });
+        homeMenu.add(dashboardItem);
+
+        // Account Menu
+        JMenu accountMenu = new JMenu("Exit");
+        JMenuItem logoutItem = new JMenuItem("Close App");
+        logoutItem.addActionListener(e -> {
+            int confirmation = JOptionPane.showConfirmDialog(
+                this,
+                "Are you sure you want to log out and exit the application?",
+                "Logout Confirmation",
+                JOptionPane.YES_NO_OPTION
+            );
+
+            if (confirmation == JOptionPane.YES_OPTION) {
+                System.exit(0); // Exit the application
+            }
+        });
+        accountMenu.add(logoutItem);
+
+        // Add menus to the menu bar
+        menuBar.add(homeMenu);
+        menuBar.add(accountMenu);
+
+        return menuBar;
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -151,11 +192,7 @@ public ViewNewsJFrame() {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new ViewNewsJFrame().setVisible(true);
-            }
-        });
+               java.awt.EventQueue.invokeLater(() -> new ViewNewsJFrame(1, "Sample Title", "Sample Description", "path/to/image.jpg").setVisible(true));
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
